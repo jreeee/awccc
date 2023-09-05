@@ -38,6 +38,8 @@ par | val | default val | desc
 -u | - | - | update the cached medialistcollection
 -u | [int] | - | update a specific cached anime
 -n | - | - | write the output in a new file
+-a | [str] | - | use account name else the one in the config
+-o | [str] | - | overwrites account namein config
 ## under the hood
 
 ### part I challenge
