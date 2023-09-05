@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-## A lot of code originates from https://github.com/jakobbbb/anipresence which does something quite different, 
-# but I'll use it as a starting point to hopefully get the hang of it
+## A lot of the caching code originates from https://github.com/jakobbbb/anipresence which does something quite different, 
+# but I'll use it as a starting point to hopefully get the hang of it soon
 
 import os
 import re
