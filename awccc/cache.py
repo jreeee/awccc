@@ -2,12 +2,18 @@
 
 # get info about the shows (from anilist and from cache)
 
+# ideally the id of the anime would also be its index, 
+# however i'm unsure if that would really be faster, given
+# that we don't query a lot of data
+
+# todo user specific lists (not anime.json)
+
 import os
 import json
 import requests
 
 class Cache:
-    cfg = {}
+    user = None
     cfg_fp = None
     cache_a = {}
     cache_l = {}
@@ -87,7 +93,9 @@ class Cache:
         url = 'https://graphql.anilist.co'
 
         response = requests.post(url, json={'query': query, 'variables': variables})
+        
         if not response.status_code == 200:
-            print("could not retrieve data")
+           print(str(response.status_code) + " could not retrieve data")
+           return
         self.cache_l = json.loads(response.text)["data"]["MediaListCollection"]["lists"][0]["entries"]
         self._write_caches()

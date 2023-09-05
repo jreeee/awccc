@@ -1,8 +1,7 @@
-```
-Disclaimer: this is neither affiliated with [anilist](https://anilist.co/) nor [awc](https://anilist.co/user/AWC/) 
-```
+## Disclaimer: this is neither affiliated with [anilist](https://anilist.co/) nor [awc](https://anilist.co/user/AWC/) 
 
-**at this point in time basically none of the things described below are working**
+
+**also at this point in time basically none of the things described below are working**
 
 ## goal
 
@@ -14,7 +13,7 @@ this is a small personal project to practice my python and graphql understanding
 
 ## script
 
-awccc is written in python and uses [anilist's graphql api](https://anilist.gitbook.io/anilist-apiv2-docs/)
+awccc is written in python and uses [anilist's graphql api v2](https://anilist.gitbook.io/anilist-apiv2-docs/)
 
 main features when i am done will be:
 - automatically adding start/complete timestamps to the challenge entries
