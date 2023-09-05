@@ -1,0 +1,4 @@
+# dirs to be ignored
+awccc/__pycache__/
+# tmp
+refs/
