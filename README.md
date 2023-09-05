@@ -1,6 +1,6 @@
-´´´
+`
 Disclaimer: this in neither affiliated with [anilist](https://anilist.co/) nor [awc](https://anilist.co/user/AWC/) 
-´´´
+`
 
 **at this point in time basically none of the things described below are working**
 
@@ -43,11 +43,11 @@ par | val | default val | desc
 ### part I challenge
 awc challenge requirements are usually structured as follows:
 
-´´´
-[number]) [symbol] [(theme:)] watch an anime [challenge]
-https://anilist.co/anime/[id]
-start: [yyyy-mm-dd] finish: [yyyy-mm-dd]
-´´´
+`[number]) [symbol] [(theme:)] watch an anime [challenge]`
+
+`https://anilist.co/anime/[id]`
+
+`start: [yyyy-mm-dd] finish: [yyyy-mm-dd]`
 
 - [number] denotes the number of the requirement
 - [symbol] the status, i.e. planned, watching, completed
