@@ -33,7 +33,7 @@ class MetaDataCache:
         key = f"{id}"
 
         if key not in self.cache.keys():
-            self.cache[key] = self._get_cover_image_url(
+            self.cache[key] = self._get_id_info(
                 id
             )
             self._write_cache()
@@ -68,7 +68,7 @@ class MetaDataCache:
             print("couldnt get data")
             return
 
-class AniPresence:
+class AniCheck:
     anime = None
 
     CACHE_PATH = os.path.expanduser("~/.cache/awccc/info.json")
@@ -114,12 +114,12 @@ class AniPresence:
 
 
 def main():
-    client_id = "908703808966766602"
+    client_id = "placeholder"
     try:
-        if a := AniPresence(client_id):
+        if a := AniCheck(client_id):
             a.loop()
-    except ConnectionRefusedError:
-        print("Connection refused.  Is Discord running?")
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
