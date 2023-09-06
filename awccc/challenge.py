@@ -14,19 +14,18 @@ class Challenge:
     chl_str = None
 
     def __init__ (self, challenge, regex):
-        # split the challenge string and store the values
-        # you'll be in trouble if it isn't in the 3-line format
+        # split the challenge string and store its values
+        # atm it won't work if it isn't in the 3-line format
         
         l1 = regex[0].search(challenge[0])
+        l2 = regex[1].search(challenge[1])
+        l3 = regex[2].search(challenge[2])
+  
         self.req = l1.group(1)
         self.sym = l1.group(2)
         self.chl_str = l1.group(3)
+        self.id = l2.group(0)
 
-        
-        self.id = regex[1].search(challenge[1]).group(1)
-
-        
-        l3 = regex[2].search(challenge[2])
         if l3:
             self.add_str = l3.group(3)
         else:
@@ -61,15 +60,13 @@ class ChallengeList:
             sys.exit(1)
 
         # the script assumes that all challenges follow the "[int][int])" format
+        # none except the first regex are used in this class, however since we
+        # use them a lot the challenge class this should be more efficient
         re_list = []
         re_list.append(re.compile("^([0-9A-Z]\d)\)\s+\[(.*?)\]\s+__(.*?)__"))
         re_list.append(re.compile("^https://anilist.co/anime/(\d+)/"))
         re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*?)\s+//(.*)"))
         re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*)"))
-        #l1_re = "^([0-9A-Z]\d)\)\s+\[(.*?)\]\s+__(.*?)__"
-        #l2_re = "^https://anilist.co/anime/(\d+)/"
-        #l3_re = "^Start:\s+(.*?)\s+Finish:\s+(.*?)\s+//(.*)"
-        #l3_alt = "^Start:\s+(.*?)\s+Finish:\s+(.*)"
 
         # sorting entries into lists
         with open(file_path, "r+") as f:
@@ -94,12 +91,5 @@ class ChallengeList:
             self.chl_str_list.append(entry)
         
         # making challenge objects
-
         for i in self.chl_str_list:
             self.chl_list.append(Challenge(i, re_list))
-
-        # print(int(cs.search(self.chl_str_list[0][0]).group(0)))
-        # print(self.chl_head)
-        # print(self.chl_str_list)
-        self.chl_list[0].print()
-        self.chl_list[5].print()

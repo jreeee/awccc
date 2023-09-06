@@ -25,5 +25,9 @@ def main():
     print(c.cache_l[0]["media"]["title"]["romaji"])
     print("-------")
     cls = challenge.ChallengeList(CHALLENGE_FILE)
+    cls.chl_list[0].print()
+    cls.chl_list[1].print()
+    cls.chl_list[5].print()
+
 if __name__ == "__main__":
     main()
