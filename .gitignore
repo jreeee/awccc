@@ -1,4 +1,5 @@
 # dirs to be ignored
-awccc/__pycache__/
+awccc/__pycache__
+challenges
 # tmp
-refs/
+refs
