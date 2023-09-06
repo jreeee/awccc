@@ -81,3 +81,5 @@ the challenge post must now be abstracted so that we can work with it
 ## bits and pieces
 
 this program will assume, that all challenges use "sharing", i.e. one anime can go on multiple challenges as i don't want to implement a check for that (yet? ever?)
+
+idea: mark challenges with issues via the symbol and write what went wrong into the challenge tail
