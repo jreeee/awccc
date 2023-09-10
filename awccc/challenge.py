@@ -16,7 +16,8 @@ class Challenge:
     def __init__ (self, challenge, regex):
         # split the challenge string and store its values
         # atm it won't work if it isn't in the 3-line format
-        
+        # TODO for-loop and proper checking
+
         l1 = regex[0].search(challenge[0])
         l2 = regex[1].search(challenge[1])
         l3 = regex[2].search(challenge[2])
@@ -44,6 +45,9 @@ class Challenge:
             print("additional: " + self.add_str)
 
     def toString(self):
+        # temp fix TODO proper implementation
+        if self.date_f != "YYYY-MM-DD":
+            self.sym = "X"
         l = []
         l.append(self.req + ") [" + self.sym + "] __" + self.chl_str + "__\n")
         l.append("https://anilist.co/anime/" + self.id + "/\n")
@@ -76,7 +80,7 @@ class ChallengeList:
         re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*)"))
 
         # sorting entries into lists
-        with open(file_path, "r+") as f:
+        with open(file_path, "r+", encoding="utf-8") as f:
             entry = []
             state = 0
             for _, line in enumerate(f):
@@ -98,7 +102,6 @@ class ChallengeList:
                         entry.append(line)
             # the last entry can't be added like the others
             self.chl_str_list.append(entry)
-        f.close()
         
         # making challenge objects
         for i in self.chl_str_list:
@@ -109,12 +112,11 @@ class ChallengeList:
 
     def save(self, file_path):
         # todo: checks if not empty
-        out = open(file_path, "w")
-        out.writelines(self.chl_head)
-        for i in self.chl_list:
-            out.writelines(i.toString())
-            out.write("\n")
-        if self.chl_tail != None:
-            out.write("<hr>\n")
-            out.writelines(self.chl_tail)
-        out.close()
+        with open(file_path, "w", encoding="utf-8") as out:
+            out.writelines(self.chl_head)
+            for i in self.chl_list:
+                out.writelines(i.toString())
+                out.write("\n")
+            if self.chl_tail != None:
+                out.write("<hr>\n")
+                out.writelines(self.chl_tail)

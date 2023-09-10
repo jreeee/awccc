@@ -32,26 +32,26 @@ class Cache:
             os.mkdir(cache_path)
 
         if os.path.exists(self.cache_a_fp):
-            with open(self.cache_a_fp, "r") as f:
+            with open(self.cache_a_fp, "rb") as f:
                 self.cache_a = json.loads(f.read())
 
         if os.path.exists(self.cache_l_fp):
-            with open(self.cache_l_fp, "r") as f:
+            with open(self.cache_l_fp, "rb") as f:
                 self.cache_l = json.loads(f.read())
             
         if os.path.exists(self.cfg_fp):
-            with open(self.cfg_fp, "r") as f:
+            with open(self.cfg_fp, "rb") as f:
                 self.cfg = json.loads(f.read())
                 
         else:
             self._write_caches()
 
     def _write_caches(self):
-        with open(self.cache_a_fp, "w+") as f:
+        with open(self.cache_a_fp, "w+", encoding="utf-8") as f:
             f.write(json.dumps(self.cache_a))
-        with open(self.cache_l_fp, "w+") as f:
+        with open(self.cache_l_fp, "w+", encoding="utf-8") as f:
             f.write(json.dumps(self.cache_l))
-        with open(self.cfg_fp, "w+") as f:
+        with open(self.cfg_fp, "w+", encoding="utf-8") as f:
             f.write(json.dumps(self.cfg))
 
     # not working at all but along these lines

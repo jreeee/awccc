@@ -14,7 +14,7 @@ def checkCaching(cache, list):
     if req == False:
         return newlist
     else:
-        #cache.get_list(cache.user, "ANIME", "COMPLETED")
+        cache.get_list(cache.user, "ANIME", "COMPLETED")
         return createIdxList(cache, list)
     
     
@@ -48,6 +48,8 @@ def pad(num):
     return str(num)
 
 def addDate(idx):
+    if idx == -1:
+        return
     print("Start: " + str(idx["startedAt"]["year"]) + "-" 
         + str(idx["startedAt"]["month"]) + "-" + str(idx["startedAt"]["day"]) 
         + " Finish: " + str(idx["completedAt"]["year"]) + "-" 
