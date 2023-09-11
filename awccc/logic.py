@@ -32,7 +32,10 @@ def createIdxList(cache, list):
         newlist.append(app)
     return newlist
 
-def dateToString(idx):
+def dateToString(id, cache_l):
+    if id == -1:
+        return [ "YYYY-MM-DD" ] * 2
+    idx = cache_l[id]
     l = []
     l.append(str(idx["startedAt"]["year"]) + "-" 
              + pad(idx["startedAt"]["month"]) 
@@ -40,7 +43,7 @@ def dateToString(idx):
     l.append(str(idx["completedAt"]["year"]) + "-" 
              + pad(idx["completedAt"]["month"]) 
              + "-" + pad(idx["completedAt"]["day"]))
-    return l
+    return l    
 
 def pad(num):
     if num < 10:

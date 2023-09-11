@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+import logic
 
 class Challenge:
     req = 0
@@ -45,9 +46,6 @@ class Challenge:
             print("additional: " + self.add_str)
 
     def toString(self):
-        # temp fix TODO proper implementation
-        if self.date_f != "YYYY-MM-DD":
-            self.sym = "X"
         l = []
         l.append(self.req + ") [" + self.sym + "] __" + self.chl_str + "__\n")
         l.append("https://anilist.co/anime/" + self.id + "/\n")
@@ -108,6 +106,21 @@ class ChallengeList:
             self.chl_list.append(Challenge(i, re_list))
 
         # do the checks or whatever
+
+    def addDates(self, cache, idxl):
+        idx = 0
+        for i in idxl:
+            date = logic.dateToString(i, cache.cache_l)
+            self.chl_list[idx].date_s = date[0]
+            self.chl_list[idx].date_f = date[1]
+            if date[1] == "YYYY-MM-DD":
+                if date[0] == "YYYY-MM-DD":
+                    self.chl_list[idx].sym = cache.syms[2]
+                else:
+                    self.chl_list[idx].sym = cache.syms[1]
+            else:
+                self.chl_list[idx].sym = cache.syms[0]
+            idx += 1
 
 
     def save(self, file_path):

@@ -8,53 +8,83 @@
 
 # todo user specific lists (not anime.json)
 
+import sys
 import os
 import json
 import requests
 
 class Cache:
-    user = None
-    cfg_fp = None
     cache_a = {}
     cache_l = {}
+    cfg = {}
+    user = None
+    syms = []
     cache_a_fp = None
     cache_l_fp = None
+    cfg_fp = None
 
     def __init__(self, cache_path):
+
         self.cache_path = cache_path
-        self.cache_a = {}
-        self.cache_l = {}
-        self.cache_a_fp = os.path.join(cache_path, "anime.json")
-        self.cache_l_fp= os.path.join(cache_path, "list.json")
-        self.cfg_fp = os.path.join(cache_path, "awccc.cfg")
+        self.syms = [ "X", "W", "O", "*", "!" ]
+        self.cfg = {}
+        self.cfg_fp = os.path.join(cache_path, "awccc.cfg")     
 
         if not os.path.exists(cache_path):
             os.mkdir(cache_path)
 
+        if os.path.exists(self.cfg_fp):
+            with open(self.cfg_fp, "r+", encoding="utf-8") as f:
+                self.cfg = json.loads(f.read())
+            self.check_cfg()
+
+        else:
+            print(f"please use the setup or manually write yout config to {self.cfg_fp}")
+            sys.exit(1)
+
+        self.cache_a = {}
+        self.cache_l = {}
+        self.cache_a_fp = os.path.join(cache_path, "anime.json")
+        self.cache_l_fp= os.path.join(cache_path, f"list-{self.user}.json")
+
         if os.path.exists(self.cache_a_fp):
-            with open(self.cache_a_fp, "rb") as f:
+            with open(self.cache_a_fp, "r+", encoding="utf-8") as f:
                 self.cache_a = json.loads(f.read())
 
         if os.path.exists(self.cache_l_fp):
-            with open(self.cache_l_fp, "rb") as f:
+            with open(self.cache_l_fp, "r+", encoding="utf-8") as f:
                 self.cache_l = json.loads(f.read())
-            
-        if os.path.exists(self.cfg_fp):
-            with open(self.cfg_fp, "rb") as f:
-                self.cfg = json.loads(f.read())
                 
         else:
             self._write_caches()
 
     def _write_caches(self):
         with open(self.cache_a_fp, "w+", encoding="utf-8") as f:
-            f.write(json.dumps(self.cache_a))
+            f.write(json.dumps(self.cache_a, indent=4))
         with open(self.cache_l_fp, "w+", encoding="utf-8") as f:
-            f.write(json.dumps(self.cache_l))
+            f.write(json.dumps(self.cache_l, indent=4))
         with open(self.cfg_fp, "w+", encoding="utf-8") as f:
-            f.write(json.dumps(self.cfg))
+            f.write(json.dumps(self.cfg, indent=4))
 
-    # not working at all but along these lines
+    def check_cfg(self):
+        # getting the username
+        try:
+            if self.cfg["user"] == "":
+                print("missing username in config")
+                sys.exit(1)
+            self.user = self.cfg["user"]
+            print("user is " + self.user)
+        except:
+            print("user attr in config missing")
+            sys.exit(1)
+
+        keys = [ "completed", "watching", "notcompl", "notchk", "failchk" ]
+        for i in range(len(keys)):
+            for j in self.cfg["symbols"]:
+                if keys[i] == j and self.cfg["symbols"][j] != "":
+                    self.syms[i] = self.cfg["symbols"][j]
+
+
     def get_list(self, username, medium, status):
         query = '''
     query ($username: String, $type: MediaType, $status: MediaListStatus) {
