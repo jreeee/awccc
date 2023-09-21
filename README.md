@@ -1,44 +1,19 @@
 ## Disclaimer: this is neither affiliated with [anilist](https://anilist.co/) nor [awc](https://anilist.co/user/AWC/) 
 
-
-**also at this point in time basically none of the things described below are working**
-
 ## goal
 
-awccc (awc challenge checker) is meant to check entries and fill dates for awc challenges. 
+awccc ("a double-u triple-c"/awc challenge checker) is meant to check entries and fill dates for awc challenges. 
 
 i am developing this as adding and checking the dates manually takes a considerable amount of time especially when only having one monitor.
 
-this is a small personal project to practice my python and graphql understanding as well as being a nice qol thing once its done
+this is a small personal project to practice my python and graphql understanding as well as being a interesting small project and nice qol thing once its done
 
+after working on it for a while i found out that awc has its own [tool](https://awc.moe/challenges/editor) which is quite nice. i am personally not a huge fan of webapps tho there are some useful features
 ## script
 
 awccc is written in python and uses [anilist's graphql api v2](https://anilist.gitbook.io/anilist-apiv2-docs/)
 
-main features when i am done will be:
-- automatically adding start/complete timestamps to the challenge entries
-- marking anime that do not meet _basic challenge reqs_
 
-things i might add after that:
-- show all anime watched after a certain timestamp to see what might be eligible for a challenge
-- give a list of shows that could be used for a requirement, based on completed shows and planning shows
-- maybe maybe check stuff directly from the website, i.e. get the link to the post, gather relevant data, gather rules from the challenge post, make a new file with checked content
-
-## parameters
-par | val | default val | desc
---- | --- | --- | ---
--h | - | - | help message
--c | - | - | check if reqs are met
--d | - | - | add dates
--m | [int] | 3 | denotes for how many reqs an anime can be used
--r | [int] | 0 | minimum runtime in minutes
--t | [int] | 0 | minimum combined runtime
--p | [int] | 0 | minimum combined popularity
--u | - | - | update the cached medialistcollection
--u | [int] | - | update a specific cached anime
--n | - | - | write the output in a new file
--a | [str] | - | use account name else the one in the config
--o | [str] | - | overwrites account namein config
 ## under the hood
 
 ### part I challenge
@@ -47,7 +22,7 @@ awc challenge requirements are usually structured as follows:
 ```
 [number]) [symbol] [(theme:)] watch an anime [challenge]
 https://anilist.co/anime/[id]
-start: [yyyy-mm-dd] finish: [yyyy-mm-dd]
+start: [yyyy-mm-dd] finish: [yyyy-mm-dd] //[(comment)]
 ```
 
 - [number] denotes the number of the requirement
@@ -56,6 +31,7 @@ start: [yyyy-mm-dd] finish: [yyyy-mm-dd]
 - [challenge] the actual challenge
 - [id] the id that anime has on anilist
 - Dates have to be formatted as noted above
+- [comment] some reqs require further info
 
 ### part II abstracting
 the challenge post must now be abstracted so that we can work with it
@@ -64,7 +40,7 @@ the challenge post must now be abstracted so that we can work with it
 
 ### part III requesting
 
-- check if the [id]s are in the cache, if they are skip the next step
+- check if the [id]s are in the cache, if they are skip the last step of III
 - get the users medialistcollection, recheck and continue
 - get the animes entry
 
@@ -80,6 +56,6 @@ the challenge post must now be abstracted so that we can work with it
 
 ## bits and pieces
 
-this program will assume, that all challenges use "sharing", i.e. one anime can go on multiple challenges as i don't want to implement a check for that (yet? ever?)
+fyi: right now all it does is checking the completed list and adding dates
 
-idea: mark challenges with issues via the symbol and write what went wrong into the challenge tail
+this program will assume, that all challenges use "sharing", i.e. one anime can go on multiple challenges as i don't want to implement a check for that (yet? ever?)

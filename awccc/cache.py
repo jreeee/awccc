@@ -6,8 +6,6 @@
 # however i'm unsure if that would really be faster, given
 # that we don't query a lot of data
 
-# todo user specific lists (not anime.json)
-
 import sys
 import os
 import json
