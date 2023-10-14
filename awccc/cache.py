@@ -21,10 +21,11 @@ class Cache:
     cache_l_fp = None
     cfg_fp = None
 
-    def __init__(self, cache_path):
+    def __init__(self, cache_path, debug=False):
 
         self.cache_path = cache_path
-        self.syms = [ "X", "W", "O", "*", "!" ]
+        # completed, watching, notcompl, notchecked, failedcheck, rewatching
+        self.syms = [ "X", "W", "O", "*", "!", "R" ]
         self.cfg = {}
         self.cfg_fp = os.path.join(cache_path, "awccc.cfg")     
 
@@ -34,7 +35,7 @@ class Cache:
         if os.path.exists(self.cfg_fp):
             with open(self.cfg_fp, "r+", encoding="utf-8") as f:
                 self.cfg = json.loads(f.read())
-            self.check_cfg()
+            self.check_cfg(debug)
 
         else:
             print(f"please use the setup or manually write yout config to {self.cfg_fp}")
@@ -64,22 +65,26 @@ class Cache:
         with open(self.cfg_fp, "w+", encoding="utf-8") as f:
             f.write(json.dumps(self.cfg, indent=4))
 
-    def check_cfg(self):
+    def check_cfg(self, debug):
         # getting the username
         try:
             if self.cfg["user"] == "":
                 print("missing username in config")
                 sys.exit(1)
             self.user = self.cfg["user"]
-            print("user is " + self.user)
+            if debug:
+                print("user is " + self.user)
         except:
             print("user attr in config missing")
             sys.exit(1)
 
-        keys = [ "completed", "watching", "notcompl", "notchk", "failchk" ]
+        # loading all custom set symbols
+        keys = [ "completed", "watching", "notcompl", "notchk", "failchk", "rewatching" ]
         for i in range(len(keys)):
             for j in self.cfg["symbols"]:
                 if keys[i] == j and self.cfg["symbols"][j] != "":
+                    if debug:
+                        print("loaded " + keys[i] + " " + self.cfg["symbols"][j])
                     self.syms[i] = self.cfg["symbols"][j]
 
 

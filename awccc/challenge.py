@@ -9,8 +9,8 @@ class Challenge:
     req = 0
     id = 0
     sym = 'o'
-    date_s = "YYYY-MM_DD"
-    date_f = "YYYY-MM_DD"
+    date_s = "YYYY-MM-DD"
+    date_f = "YYYY-MM-DD"
     add_str = ""
     chl_str = None
 
@@ -22,7 +22,7 @@ class Challenge:
         l1 = regex[0].search(challenge[0])
         l2 = regex[1].search(challenge[1])
         l3 = regex[2].search(challenge[2])
-  
+
         self.req = l1.group(1)
         self.sym = l1.group(2)
         self.chl_str = l1.group(3)
@@ -54,10 +54,13 @@ class Challenge:
 
 class ChallengeList:
 
-    chl_head = []
-    chl_tail = None # usually unimportant
-    chl_str_list = [] # contains lists with the entries
-    chl_list = [] # contains the challenge class
+    chl_head = []       # contains name, symbol legend and dates
+    finish_date = ''    # automatically generated via latest req finish
+    start_date = ''     # start date sould be manually set, TODO get via link
+    chl_tail = None     # usually unimportant
+    chl_str_list = []   # contains lists with the entries
+    chl_list = []       # contains the challenge class
+    re_list = []
 
     def __init__(self, file_path):
 
@@ -68,21 +71,24 @@ class ChallengeList:
             print("couldn't find file at " + file_path)
             sys.exit(1)
 
-        # the script assumes that all challenges follow the "[int][int])" format
+        # the script assumes that all challenges follow the "[int/char][int])" format
         # none except the first regex are used in this class, however since we
         # use them a lot the challenge class this should be more efficient
-        re_list = []
-        re_list.append(re.compile("^([0-9A-Z]\d)\)\s+\[(.*?)\]\s+__(.*?)__"))
-        re_list.append(re.compile("^https://anilist.co/anime/(\d+)/"))
-        re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*?)\s+(//.*)"))
-        re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*)"))
+        self.re_list.append(re.compile("^([0-9A-Z]\d)\)\s+\[(.*?)\]\s+__(.*?)__"))
+        self.re_list.append(re.compile("^https://anilist.co/anime/(\d+)/*"))
+        self.re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*?)\s+(//.*)"))
+        self.re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*)"))
+        self.re_list.append(re.compile("^Challenge Start Date:\s+(.*)")) 
+        self.re_list.append(re.compile("^Challenge Finish Date:\s+(.*)"))
+        self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
+        self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
 
         # sorting entries into lists
         with open(file_path, "r+", encoding="utf-8") as f:
             entry = []
             state = 0
             for _, line in enumerate(f):
-                if re_list[0].match(line) and state != -2:
+                if state != -2 and self.re_list[0].match(line):
                     state += 1
                     if state > 1:
                         self.chl_str_list.append(entry)
@@ -100,28 +106,64 @@ class ChallengeList:
                         entry.append(line)
             # the last entry can't be added like the others
             self.chl_str_list.append(entry)
-        
+
         # making challenge objects
         for i in self.chl_str_list:
-            self.chl_list.append(Challenge(i, re_list))
+            self.chl_list.append(Challenge(i, self.re_list))
 
-        # do the checks or whatever
 
-    def addDates(self, cache, idxl):
+    def addDates(self, cache, idxl, debug=False):
         idx = 0
         for i in idxl:
             date = logic.dateToString(i, cache.cache_l)
             self.chl_list[idx].date_s = date[0]
             self.chl_list[idx].date_f = date[1]
+            # setting according symbols TODO rewatch
             if date[1] == "YYYY-MM-DD":
                 if date[0] == "YYYY-MM-DD":
                     self.chl_list[idx].sym = cache.syms[2]
                 else:
                     self.chl_list[idx].sym = cache.syms[1]
             else:
+                if self.finish_date == "YYYY-MM-DD" or self.finish_date < date[1]:
+                    self.finish_date = date[1]
                 self.chl_list[idx].sym = cache.syms[0]
             idx += 1
+        if debug:
+            print("finish date: " + str(self.finish_date))
 
+    def updateHead(self, symlist, debug):
+        for i in range(len(self.chl_head)):
+            if self.re_list[4].match(self.chl_head[i]):
+                start = self.re_list[4].search(self.chl_head[i])
+                if start.group(1) != "YYYY-MM-DD":
+                    self.start_date = start.group(1)
+                else:   
+                    # TODO search for post age
+                    print("no start date set")
+            elif self.re_list[5].match(self.chl_head[i]):
+                end = self.re_list[5].search(self.chl_head[i])
+                if end.group(1) == "YYYY-MM-DD" or end.group(1) != self.finish_date:
+                    self.chl_head[i] = f"Challenge Finish Date: {self.finish_date}\n"
+            # elif self.re_list[6].match(self.chl_head[i]):
+            #     if self.re_list[7].match(self.chl_head[i]):
+            #         self.chl_head[i] = self.updateSymbols(self.re_list[7].search(self.chl_head[i]), symlist, 3)
+            #     else:
+            #         self.chl_head[i] = self.updateSymbols(self.re_list[6].search(self.chl_head[i]), symlist, 2)
+
+    # ugh i really have to build another parser here, huh :/
+    def updateSymbols(self, symbols, symlist, num):
+        # also add waching
+        k2 = [ "Completed", "Not Completed" ]
+        k3 = [ "Completed", "Not Completed", "Rewatching" ]
+
+        keys = k2 if num == 2 else k3
+        for i in range(len(keys)):
+            for j in range(len(keys)):
+                if keys[i] == symlist.group(j):
+                    print("oh no")
+
+        print(symbols.group(1) + symbols.group(2) + symbols.group(3) + symbols.group(4))
 
     def save(self, file_path):
         # todo: checks if not empty
