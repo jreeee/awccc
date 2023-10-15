@@ -1,0 +1,11 @@
+{
+    "user": "",
+    "symbols": {
+        "completed": "\u2714\ufe0f",
+        "notcompl": "\u058d",
+        "watching": "\ud83d\udcfa",
+        "notchk": "\u2b55",
+        "failchk": "\u274c",
+        "rewatching": "\u00ae"
+    }
+}

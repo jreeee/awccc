@@ -21,16 +21,15 @@ class Cache:
     cache_l_fp = None
     cfg_fp = None
 
-    def __init__(self, cache_path, debug=False):
+    def __init__(self, cache_path, config_path, debug=False):
 
-        self.cache_path = cache_path
         # completed, watching, notcompl, notchecked, failedcheck, rewatching
         self.syms = [ "X", "W", "O", "*", "!", "R" ]
         self.cfg = {}
-        self.cfg_fp = os.path.join(cache_path, "awccc.cfg")     
+        self.cfg_fp = os.path.join(config_path, "awccc.cfg")     
 
-        if not os.path.exists(cache_path):
-            os.mkdir(cache_path)
+        if not os.path.exists(config_path):
+            os.mkdir(config_path)
 
         if os.path.exists(self.cfg_fp):
             with open(self.cfg_fp, "r+", encoding="utf-8") as f:
@@ -41,10 +40,13 @@ class Cache:
             print(f"please use the setup or manually write yout config to {self.cfg_fp}")
             sys.exit(1)
 
+        if not os.path.exists(cache_path):
+            os.mkdir(cache_path)
+
         self.cache_a = {}
         self.cache_l = {}
         self.cache_a_fp = os.path.join(cache_path, "anime.json")
-        self.cache_l_fp= os.path.join(cache_path, f"list-{self.user}.json")
+        self.cache_l_fp= os.path.join(cache_path, f"list-{self.user.lower()}.json")
 
         if os.path.exists(self.cache_a_fp):
             with open(self.cache_a_fp, "r+", encoding="utf-8") as f:

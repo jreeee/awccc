@@ -141,7 +141,7 @@ class ChallengeList:
         if debug:
             print("finish date: " + str(self.finish_date) + " latest entry: " + finish)
 
-    def updateHead(self, symlist, debug):
+    def updateHead(self, symlist, debug=False):
         for i in range(len(self.chl_head)):
             if self.re_list[4].match(self.chl_head[i]):
                 start = self.re_list[4].search(self.chl_head[i])

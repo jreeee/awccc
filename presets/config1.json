@@ -1,0 +1,11 @@
+{
+    "user": "",
+    "symbols": {
+        "completed": "X",
+        "notcompl": "O",
+        "watching": "W",
+        "notchk": "N",
+        "failchk": "F",
+        "rewatching": "R"
+    }
+}

@@ -1,5 +1,6 @@
-# dirs to be ignored
+# dirs and files to be ignored
 awccc/__pycache__
 challenges
+
 # tmp
 refs

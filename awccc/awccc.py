@@ -11,18 +11,20 @@ import pathlib
 
 def main():
     CACHE_PATH = os.path.expanduser("~/.cache/awccc/")
+    CONFIG_PATH = os.path.expanduser("~/.config/awccc/")
     SCRIPT_PATH = pathlib.Path(__file__).parent.resolve()
     CHALLENGE_FILE = os.path.join(SCRIPT_PATH, "../challenges/test.txt")
 
-    c = cache.Cache(CACHE_PATH)
-    
-    # c.get_list(c.user, "ANIME", "COMPLETED")
-    # idlist = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-    # newlist = logic.checkCaching(c, idlist)
-    # print(newlist)
-    print(c.cache_l[0]["media"]["title"]["romaji"])
+    c = cache.Cache(CACHE_PATH, CONFIG_PATH)
     cls = challenge.ChallengeList(CHALLENGE_FILE)
-    print(cls)
+    idl = []
+    for i in cls.chl_list:
+        idl.append(i.id)
+    idxl = logic.checkCaching(c, idl)
+    cls.addDates(c, idxl)
+    cls.updateHead(c.syms)
+    cls.save(CHALLENGE_FILE + ".new")
+    print("saved updated file")
 
 if __name__ == "__main__":
     main()
