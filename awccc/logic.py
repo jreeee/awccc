@@ -39,7 +39,7 @@ def createIdxList(cache, list, idl, debug, force=False):
                     app = idx
                     break
                 idx += 1
-            if debug and app == -1:
+            if app == -1:
                 print("! id: " + str(list[i]) + " idx : - could not find in list")
             newlist.append(app)
     return newlist

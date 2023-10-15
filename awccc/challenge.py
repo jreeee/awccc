@@ -80,8 +80,10 @@ class ChallengeList:
         self.re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*)"))
         self.re_list.append(re.compile("^Challenge Start Date:\s+(.*)")) 
         self.re_list.append(re.compile("^Challenge Finish Date:\s+(.*)"))
+        # there's got to be a better / smarter way to do this...
         self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
         self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
+        self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
 
         # sorting entries into lists
         with open(file_path, "r+", encoding="utf-8") as f:
@@ -114,6 +116,8 @@ class ChallengeList:
 
     def addDates(self, cache, idxl, debug=False):
         idx = 0
+        compl = 0
+        finish = "YYYY-MM-DD"
         for i in idxl:
             date = logic.dateToString(i, cache.cache_l)
             self.chl_list[idx].date_s = date[0]
@@ -125,12 +129,17 @@ class ChallengeList:
                 else:
                     self.chl_list[idx].sym = cache.syms[1]
             else:
-                if self.finish_date == "YYYY-MM-DD" or self.finish_date < date[1]:
-                    self.finish_date = date[1]
+                if finish == "YYYY-MM-DD" or finish < date[1]:
+                    finish = date[1]
                 self.chl_list[idx].sym = cache.syms[0]
+                compl += 1
             idx += 1
+        if compl != idx:
+            print("! not all reqs have been finished")
+        # setting the date anyway (basically only applies to seasonals tho)
+        self.finish_date = finish
         if debug:
-            print("finish date: " + str(self.finish_date))
+            print("finish date: " + str(self.finish_date) + " latest entry: " + finish)
 
     def updateHead(self, symlist, debug):
         for i in range(len(self.chl_head)):
@@ -145,25 +154,28 @@ class ChallengeList:
                 end = self.re_list[5].search(self.chl_head[i])
                 if end.group(1) == "YYYY-MM-DD" or end.group(1) != self.finish_date:
                     self.chl_head[i] = f"Challenge Finish Date: {self.finish_date}\n"
-            # elif self.re_list[6].match(self.chl_head[i]):
-            #     if self.re_list[7].match(self.chl_head[i]):
-            #         self.chl_head[i] = self.updateSymbols(self.re_list[7].search(self.chl_head[i]), symlist, 3)
-            #     else:
-            #         self.chl_head[i] = self.updateSymbols(self.re_list[6].search(self.chl_head[i]), symlist, 2)
+            # bad parser part
+            elif self.re_list[6].match(self.chl_head[i]):
+                if self.re_list[7].match(self.chl_head[i]):
+                    if self.re_list[8].match(self.chl_head[i]):
+                        self.chl_head[i] = self.updateSymbols(self.re_list[8].search(self.chl_head[i]), symlist, 4)
+                    else:
+                        self.chl_head[i] = self.updateSymbols(self.re_list[7].search(self.chl_head[i]), symlist, 3)
+                else:
+                    self.chl_head[i] = self.updateSymbols(self.re_list[6].search(self.chl_head[i]), symlist, 2)
 
-    # ugh i really have to build another parser here, huh :/
+    # beautiful, innit? the order does not matter
     def updateSymbols(self, symbols, symlist, num):
-        # also add waching
-        k2 = [ "Completed", "Not Completed" ]
-        k3 = [ "Completed", "Not Completed", "Rewatching" ]
-
-        keys = k2 if num == 2 else k3
+        keys = [ "Completed", "Not Completed", "Watching", "Rewatching" ]
+        mapping = [ 0, 2, 1, 5 ]
+        res = "Legend:"
         for i in range(len(keys)):
-            for j in range(len(keys)):
-                if keys[i] == symlist.group(j):
-                    print("oh no")
-
-        print(symbols.group(1) + symbols.group(2) + symbols.group(3) + symbols.group(4))
+            for j in range(num):
+                # the replace is horrible imho but the easiest fix i could think of
+                if keys[i].replace(' ', '') == symbols.group((j+1)*2).replace(' ', ''):
+                    res +=  " [" + symlist[mapping[i]] + "] = " + keys[i]
+                    break
+        return res + "\n"
 
     def save(self, file_path):
         # todo: checks if not empty
