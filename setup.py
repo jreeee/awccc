@@ -156,9 +156,9 @@ def createUser(username, preset, force=False):
     file["user"] = username
     with open(CONFIG_FILE, "w+", encoding="utf-8") as f:
         f.write(json.dumps(file, indent=4))
-    if not os.exist(CHALLENGE_PATH):
+    if not os.path.exists(CHALLENGE_PATH):
         os.mkdir(CHALLENGE_PATH)
-        with open(os.join(CHALLENGE_PATH, "test.txt"), "w+", encoding="utf-8") as f:
+        with open(os.path.join(CHALLENGE_PATH, "test.txt"), "a", encoding="utf-8") as f:
             f.write("Your Challenge here")
 
 def main():
