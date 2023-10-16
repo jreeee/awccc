@@ -43,7 +43,7 @@ def confirmation(str, force):
 def rmcache(user, force=False):
     # sanity check
     if not os.path.exists(CACHE_PATH):
-        print("no cache path, nothing to remove")
+        print("no cache directory, nothing to remove")
         sys.exit(1)
     
     mode = 0
@@ -83,12 +83,22 @@ def rmcache(user, force=False):
                 print(f'Failed to delete {filepath}. Reason: {e}')
 
 def rmconfig(force=False):
+    if not os.path.exists(CONFIG_FILE):
+        if force:
+            print("no config directory, skipping")
+            return
+        else:
+            print("no config directory, nothing to remove")
+            sys.exit(1)
     confirmation("the config file", force)
     rmtree(CONFIG_PATH)
 
 def rmscript(force=False):
     confirmation("the program", force)
-    rmtree(CACHE_PATH)
+    if not os.path.exists(CONFIG_FILE):
+        print("no cache directory, skipping")
+    else:
+        rmtree(CACHE_PATH)
     rmconfig(True)
     rmtree(SCRIPT_PATH)
     print("removed script")
