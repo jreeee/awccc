@@ -6,6 +6,7 @@ import pathlib
 import getopt
 import requests
 import json
+from shutil import rmtree
 
 CACHE_PATH = os.path.expanduser("~/.cache/awccc/")
 CONFIG_PATH = os.path.expanduser("~/.config/awccc/")
@@ -82,16 +83,15 @@ def rmcache(user, force=False):
                 print(f'Failed to delete {filepath}. Reason: {e}')
 
 def rmconfig(force=False):
-    # TODO implement
     confirmation("the config file", force)
+    rmtree(CONFIG_PATH)
 
 def rmscript(force=False):
-    # TODO implement
-    confirmation("the everything file", force)
-    rmcache("/all/", True)
+    confirmation("the program", force)
+    rmtree(CACHE_PATH)
     rmconfig(True)
-    print("remove script")
-    print("bye :)")
+    rmtree(SCRIPT_PATH)
+    print("removed script")
     sys.exit(0)
 
 def checkvalidity(username, force=False):
