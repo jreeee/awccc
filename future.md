@@ -1,6 +1,5 @@
 ## TODOs
-- fix setup
-- fix paths
+- check that symbols aren't the same
 - fix read-in
 - fix chl header stuff
 - download anime metadata and store it
@@ -10,10 +9,9 @@
 ## Goals
 
 main features when i am done will be:
-- automatically adding start/complete timestamps to the challenge entries [almost done]
+- automatically adding start/complete timestamps to the challenge entries [done](except specific edge-case)
 - marking anime that do not meet _basic challenge reqs_
 - check stuff directly from the website, i.e. get the link to the post, gather relevant data, gather rules from the challenge post, make a new file with checked content
-clean up file structure
 
 ## Ideas
 
@@ -21,7 +19,7 @@ things i might add after that:
 - show all anime watched after a certain timestamp to see what might be eligible for a challenge
 - give a list of shows that could be used for a requirement, based on completed shows and planning shows
 - mark challenges with issues via the symbol and write what went wrong into the challenge tail
-
+- maybe maybe have a option to update/generate and post the posts
 
 ### Challenge Managagement
 _might be its own program?_
@@ -32,7 +30,7 @@ _might be its own program?_
 
 ## parameters
 
-once im halfway done
+once im halfway done [not soon]
 par | val | default val | desc
 --- | --- | --- | ---
 -h | - | - | help message
@@ -47,3 +45,5 @@ par | val | default val | desc
 -n | - | - | write the output in a new file
 -a | [str] | - | use account name else the one in the config
 -o | [str] | - | overwrites account namein config
+
+those will update and change as i go, but mark where i kinda want to arrive at

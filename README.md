@@ -4,58 +4,50 @@
 
 awccc ("a double-u triple-c"/awc challenge checker) is meant to check entries and fill dates for awc challenges. 
 
-i am developing this as adding and checking the dates manually takes a considerable amount of time especially when only having one monitor.
+i am developing this as adding and checking the dates manually takes a considerable amount of time.
 
-this is a small personal project to practice my python and graphql understanding as well as being a interesting small project and nice qol thing once its done
+this is a small personal project to practice my python and graphql understanding as well as being a slight qol improvement thing once its done
 
-after working on it for a while i found out that awc has its own [tool](https://awc.moe/challenges/editor) which is quite nice. i am personally not a huge fan of webapps tho there are some useful features
+after working on this for a while i found out that awc has its own [tool](https://awc.moe/challenges/editor) which is quite nice. however since i personally am not a huge fan of webapps this won't deter me (tho its a good reference for some features needed i'd otherwise forget about)
 ## script
 
 awccc is written in python and uses [anilist's graphql api v2](https://anilist.gitbook.io/anilist-apiv2-docs/)
 
+### setup.py
+please run this the first time before using the script, it will generate relevant files the script needs. 
 
-## under the hood
+can also be used to clear the cache or config as well as uninstalling the whole script
 
-### part I challenge
-awc challenge requirements are usually structured as follows:
+### running
 
-```
-[number]) [symbol] [(theme:)] watch an anime [challenge]
-https://anilist.co/anime/[id]
-start: [yyyy-mm-dd] finish: [yyyy-mm-dd] //[(comment)]
-```
+currently the script reads _challenges/test.txt_ and writes the new file to _challenges/test.txt.new_ from where it can be copied to the comment
 
-- [number] denotes the number of the requirement
-- [symbol] the status, i.e. planned, watching, completed
-- [theme:] the motto of this entry, can be omitted
-- [challenge] the actual challenge
-- [id] the id that anime has on anilist
-- Dates have to be formatted as noted above
-- [comment] some reqs require further info
+at this point in time there are no args to specify anything
 
-### part II abstracting
-the challenge post must now be abstracted so that we can work with it
-- split all the requirements and store them in a list
-- match the [challenge] component to their function (if available) otherwise print a comment for manual checking
+### structure
 
-### part III requesting
+- . contains this git repo
 
-- check if the [id]s are in the cache, if they are skip the last step of III
-- get the users medialistcollection, recheck and continue
-- get the animes entry
+- _~/.cache/awccc/_ contains a list of the shows watched by each user who has locally used the script and a general list containing more specific information to each show
+- _~/.config/awccc/_ contains the configuration file
 
-### part IV checking
+### config file
 
-- check if the [challenge] and anime match, update [symbol]
-- add start and finish dates if available
+written in .json, if this is not in valid json the script won't work
 
-### part V done
+contains username
 
-- overwrite the relevant parts in the input file
-- add annotation if the req couldn't be checked
+optional: symbols to use, note: not all sybols have to be set
 
-## bits and pieces
+for examples see _presets/_
+
+
+## bits
 
 fyi: right now all it does is checking the completed list and adding dates
 
 this program will assume, that all challenges use "sharing", i.e. one anime can go on multiple challenges as i don't want to implement a check for that (yet? ever?)
+
+also your profile needs to be set to (semi-)public since i want to avoid dealing with auth stuff (and the challenges require that profile vis anyway)
+
+although the program caches quite a bit of info, it is still a good idea to have a working internet connection when using it

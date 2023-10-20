@@ -185,6 +185,9 @@ def main():
                 delete = curr_val
             elif curr_arg in "-f":
                 force = True
+            else:
+                print("arg not recognized")
+                usage()
 
     except getopt.error as err:
         print(err)
