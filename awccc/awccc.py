@@ -6,15 +6,28 @@ import os
 import logic
 import cache
 import challenge
-
+import argparse
 import pathlib
 
 def main():
+    # setup paths
     CACHE_PATH = os.path.expanduser("~/.cache/awccc/")
     CONFIG_PATH = os.path.expanduser("~/.config/awccc/")
     SCRIPT_PATH = pathlib.Path(__file__).parent.resolve()
-    CHALLENGE_FILE = os.path.join(SCRIPT_PATH, "../challenges/test.txt")
-
+    CHALLENGE_PATH = os.path.join(SCRIPT_PATH, "../challenges/")
+    CHALLENGE_FILE = os.path.join(CHALLENGE_PATH, "test.txt")
+    # handle input
+    parser = argparse.ArgumentParser(prog="awccc", 
+                                     description="tool to update awc challenge entries",
+                                     epilog="more info: https://github.com/jre/awccc")
+    parser.add_argument("-l", "--link", type=str, required=False)
+    args = parser.parse_args()
+    if args.link is not None:
+        
+        comment = challenge.ChallengeComment(args.link, CHALLENGE_PATH)
+        CHALLENGE_FILE = os.path.join(comment.file_path)
+    # check
+    print(CHALLENGE_FILE)
     c = cache.Cache(CACHE_PATH, CONFIG_PATH)
     cls = challenge.ChallengeList(CHALLENGE_FILE)
     idl = []

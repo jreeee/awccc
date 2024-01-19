@@ -4,6 +4,8 @@ import os
 import sys
 import re
 import logic
+import requests
+import json
 
 class Challenge:
     req = 0
@@ -187,3 +189,56 @@ class ChallengeList:
             if self.chl_tail != None:
                 out.write("<hr>\n")
                 out.writelines(self.chl_tail)
+
+class ChallengeComment:
+
+    file_path = ""
+
+    def __init__(self, link, path):
+        info = re.compile("^https://anilist.co/forum/thread/(\d+)/comment/(\d+)*")
+        ids = info.search(link)
+        query = '''
+query ($threadId: Int, $id: Int) {
+    ThreadComment (threadId: $threadId, id: $id) {
+        comment
+        user {
+            id
+        }
+        childComments
+        user {
+            id
+        }
+    }
+}
+'''
+        variables = {
+            'threadId': ids.group(1),
+            'id': ids.group(2)
+            }
+        url = 'https://graphql.anilist.co'
+
+        response = requests.post(url, json={'query': query, 'variables': variables})
+
+        if not response.status_code == 200:
+            print(str(response.status_code) + " could not retrieve data")
+            print(json.loads(response.text)["errors"][0]["message"])
+            print(json.loads(response.text)["errors"][0]["locations"])
+            sys.exit(1)
+        
+        resp = json.loads(response.text)["data"]
+        #get the id
+        uid = resp["ThreadComment"][0]["user"]["id"]
+        #print(uid)
+        content = resp["ThreadComment"][0]["comment"]
+        if resp["ThreadComment"][0].get("childComments") != None:
+            for i in resp["ThreadComment"][0]["childComments"]:
+                if uid == i["user"]["id"]:
+                    content = content + "\n\n---------------------------\n\n"
+                    content = content + i["comment"]
+
+        file_name = resp["ThreadComment"][0]["comment"].partition("\n")[0].strip("#_ ").strip("_").replace(" ", "-")
+        self.file_path = os.path.join(path, file_name + ".txt")
+        print(content)
+
+        with open(self.file_path, "w", encoding="utf-8") as f:
+            f.write(content)

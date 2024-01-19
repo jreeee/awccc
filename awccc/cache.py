@@ -81,13 +81,14 @@ class Cache:
             sys.exit(1)
 
         # loading all custom set symbols
-        keys = [ "completed", "watching", "notcompl", "notchk", "failchk", "rewatching" ]
-        for i in range(len(keys)):
-            for j in self.cfg["symbols"]:
-                if keys[i] == j and self.cfg["symbols"][j] != "":
-                    if debug:
-                        print("loaded " + keys[i] + " " + self.cfg["symbols"][j])
-                    self.syms[i] = self.cfg["symbols"][j]
+        if self.cfg.get("symbols") != None:
+            keys = [ "completed", "watching", "notcompl", "notchk", "failchk", "rewatching" ]
+            for i in range(len(keys)):
+                for j in self.cfg["symbols"]:
+                    if keys[i] == j and self.cfg["symbols"][j] != "":
+                        if debug:
+                            print("loaded " + keys[i] + " " + self.cfg["symbols"][j])
+                        self.syms[i] = self.cfg["symbols"][j]
 
 
     def get_list(self, username, medium, status):
