@@ -194,7 +194,7 @@ class ChallengeComment:
 
     file_path = ""
 
-    def __init__(self, link, path):
+    def __init__(self, link, path, debug=False):
         info = re.compile("^https://anilist.co/forum/thread/(\d+)/comment/(\d+)*")
         ids = info.search(link)
         query = '''
@@ -238,7 +238,8 @@ query ($threadId: Int, $id: Int) {
 
         file_name = resp["ThreadComment"][0]["comment"].partition("\n")[0].strip("#_ ").strip("_").replace(" ", "-")
         self.file_path = os.path.join(path, file_name + ".txt")
-        print(content)
+        if debug:
+            print(content)
 
         with open(self.file_path, "w", encoding="utf-8") as f:
             f.write(content)

@@ -27,21 +27,22 @@ def createIdxList(cache, list, idl, debug, force=False):
     newlist = []
     for i in range(len(list)):
         # this is used on the second run when the list presumably has some entries
-        if not force and idl[i] != -1:
-            newlist.append(idl[i])
-        else:
-            idx = 0
-            app = -1
-            for j in cache.cache_l:
-                if j["media"]["id"] == int(list[i]):
-                    if debug:
-                        print("> id: " + str(list[i]) + " idx: " + str(idx) + " found " + j["media"]["title"]["romaji"])
-                    app = idx
-                    break
-                idx += 1
-            if app == -1:
-                print("! id: " + str(list[i]) + " idx : - could not find in list")
-            newlist.append(app)
+        # would work if adding stuff were to not affect the indices
+        # if not force and idl[i] != -1:
+        #     newlist.append(idl[i])
+        # else:
+        idx = 0
+        app = -1
+        for j in cache.cache_l:
+            if j["media"]["id"] == int(list[i]):
+                if debug:
+                    print("> id: " + str(list[i]) + " idx: " + str(idx) + " found " + j["media"]["title"]["romaji"])
+                app = idx
+                break
+            idx += 1
+        if app == -1:
+            print("! id: " + str(list[i]) + " idx : - could not find in list")
+        newlist.append(app)
     return newlist
 
 def dateToString(id, cache_l):
