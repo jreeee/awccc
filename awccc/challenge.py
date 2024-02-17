@@ -28,7 +28,11 @@ class Challenge:
         self.req = l1.group(1)
         self.sym = l1.group(2)
         self.chl_str = l1.group(3)
-        self.id = l2.group(1)
+        print(self.chl_str)
+        if l2 != None:
+            self.id = l2.group(1)
+        else:
+            self.id = "0"
 
         if l3:
             self.add_str = l3.group(3)

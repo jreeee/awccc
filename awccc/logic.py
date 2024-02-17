@@ -33,20 +33,28 @@ def createIdxList(cache, list, idl, debug, force=False):
         # else:
         idx = 0
         app = -1
-        for j in cache.cache_l:
-            if j["media"]["id"] == int(list[i]):
-                if debug:
-                    print("> id: " + str(list[i]) + " idx: " + str(idx) + " found " + j["media"]["title"]["romaji"])
-                app = idx
-                break
+        entry_id = int(list[i])
+        # reqs without entries
+        if entry_id == 0:
             idx += 1
+            app = 0
+        else:
+            for j in cache.cache_l:
+                if j["media"]["id"] == int(entry_id):
+                    if debug:
+                        print("> id: " + str(entry_id) + " idx: " + str(idx) + " found " + j["media"]["title"]["romaji"])
+                    app = idx
+                    break
+                idx += 1
         if app == -1:
-            print("! id: " + str(list[i]) + " idx : - could not find in list")
+            print("! id: " + str(entry_id) + " idx : - could not find in list")
+        elif app == 0:
+            print("missing requirement")
         newlist.append(app)
     return newlist
 
 def dateToString(id, cache_l):
-    if id == -1:
+    if id == -1 or id == 0:
         return [ "YYYY-MM-DD" ] * 2
     idx = cache_l[id]
     l = []
