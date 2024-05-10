@@ -28,7 +28,6 @@ class Challenge:
         self.req = l1.group(1)
         self.sym = l1.group(2)
         self.chl_str = l1.group(3)
-        print(self.chl_str)
         if l2 != None:
             self.id = l2.group(1)
         else:
@@ -80,16 +79,16 @@ class ChallengeList:
         # the script assumes that all challenges follow the "[int/char][int])" format
         # none except the first regex are used in this class, however since we
         # use them a lot the challenge class this should be more efficient
-        self.re_list.append(re.compile("^([0-9A-Z]\d)\)\s+\[(.*?)\]\s+__(.*?)__"))
-        self.re_list.append(re.compile("^https://anilist.co/anime/(\d+)/*"))
-        self.re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*?)\s+(//.*)"))
-        self.re_list.append(re.compile("^Start:\s+(.*?)\s+Finish:\s+(.*)"))
-        self.re_list.append(re.compile("^Challenge Start Date:\s+(.*)")) 
-        self.re_list.append(re.compile("^Challenge Finish Date:\s+(.*)"))
+        self.re_list.append(re.compile("^([0-9A-Z]\\d)\\)\\s+\\[(.*?)\\]\\s+__(.*?)__"))
+        self.re_list.append(re.compile("^https://anilist.co/anime/(\\d+)/*"))
+        self.re_list.append(re.compile("^Start:\\s+(.*?)\\s+Finish:\\s+(.*?)\\s+(//.*)"))
+        self.re_list.append(re.compile("^Start:\\s+(.*?)\\s+Finish:\\s+(.*)"))
+        self.re_list.append(re.compile("^Challenge Start Date:\\s+(.*)")) 
+        self.re_list.append(re.compile("^Challenge Finish Date:\\s+(.*)"))
         # there's got to be a better / smarter way to do this...
-        self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
-        self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
-        self.re_list.append(re.compile("^Legend:\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*?)\s+\[(.*?)\]\s+=\s+(.*)"))
+        self.re_list.append(re.compile("^Legend:\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*)"))
+        self.re_list.append(re.compile("^Legend:\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*)"))
+        self.re_list.append(re.compile("^Legend:\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*)"))
 
         # sorting entries into lists
         with open(file_path, "r+", encoding="utf-8") as f:
@@ -199,7 +198,7 @@ class ChallengeComment:
     file_path = ""
 
     def __init__(self, link, path, debug=False):
-        info = re.compile("^https://anilist.co/forum/thread/(\d+)/comment/(\d+)*")
+        info = re.compile("^https://anilist.co/forum/thread/(\\d+)/comment/(\\d+)*")
         ids = info.search(link)
         query = '''
 query ($threadId: Int, $id: Int) {
