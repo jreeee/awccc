@@ -33,6 +33,8 @@ def main():
     idl = []
     for i in cls.chl_list:
         idl.append(i.id)
+    if len(idl) > len(set(idl)):
+        print("[WARN] repeating id")
     idxl = logic.checkCaching(c, idl)
     cls.addDates(c, idxl)
     cls.updateHead(c.syms)
