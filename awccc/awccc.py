@@ -21,25 +21,29 @@ def main():
                                      description="tool to update awc challenge entries",
                                      epilog="more info: https://github.com/jre/awccc")
     parser.add_argument("-l", "--link", type=str, required=False)
+    parser.add_argument("-m", "--manga", action="store_true")
     args = parser.parse_args()
     if args.link is not None:
-        
         comment = challenge.ChallengeComment(args.link, CHALLENGE_PATH)
         CHALLENGE_FILE = os.path.join(comment.file_path)
     # check
-    print(CHALLENGE_FILE)
-    c = cache.Cache(CACHE_PATH, CONFIG_PATH)
-    cls = challenge.ChallengeList(CHALLENGE_FILE)
+    if args.manga:
+        var = "manga"
+    else:
+        var = "anime"
+    print("checking " + var + " for " + CHALLENGE_FILE)
+    c = cache.Cache(CACHE_PATH, CONFIG_PATH, args.manga)
+    cls = challenge.ChallengeList(CHALLENGE_FILE, args.manga)
     idl = []
     for i in cls.chl_list:
         idl.append(i.id)
     if len(idl) > len(set(idl)):
         print("[WARN] repeating id")
-    idxl = logic.checkCaching(c, idl)
+    idxl = logic.checkCaching(c, idl, args.manga)
     cls.addDates(c, idxl)
     cls.updateHead(c.syms)
     cls.save(CHALLENGE_FILE + ".new")
-    print("saved updated file")
+    print("saved updated file as " + CHALLENGE_FILE + ".new" )
 
 if __name__ == "__main__":
     main()

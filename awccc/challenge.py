@@ -15,12 +15,13 @@ class Challenge:
     date_f = "YYYY-MM-DD"
     add_str = ""
     chl_str = None
+    var = "anime"
 
-    def __init__ (self, challenge, regex):
+    def __init__ (self, challenge, regex, variant):
         # split the challenge string and store its values
         # atm it won't work if it isn't in the 3-line format
         # TODO for-loop and proper checking
-
+        
         l1 = regex[0].search(challenge[0])
         l2 = regex[1].search(challenge[1])
         l3 = regex[2].search(challenge[2])
@@ -28,6 +29,7 @@ class Challenge:
         self.req = l1.group(1)
         self.sym = l1.group(2)
         self.chl_str = l1.group(3)
+        self.var = variant
         if l2 != None:
             self.id = l2.group(1)
         else:
@@ -53,7 +55,7 @@ class Challenge:
     def toString(self):
         l = []
         l.append(self.req + ") [" + self.sym + "] __" + self.chl_str + "__\n")
-        l.append("https://anilist.co/anime/" + self.id + "/\n")
+        l.append("https://anilist.co/" + self.var + "/" + self.id + "/\n")
         l.append("Start: " + self.date_s + " Finish: " + self.date_f + " " + self.add_str + "\n")
         return l
 
@@ -67,7 +69,7 @@ class ChallengeList:
     chl_list = []       # contains the challenge class
     re_list = []
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, is_manga):
 
         # parsing the file
 
@@ -75,12 +77,18 @@ class ChallengeList:
         if not os.path.exists(file_path):
             print("couldn't find file at " + file_path)
             sys.exit(1)
+        if is_manga:
+            variant = "manga"
+        else:
+            variant = "anime"
+
+        # this does currently not work with Tarot and Collection Challenges!
 
         # the script assumes that all challenges follow the "[int/char][int])" format
         # none except the first regex are used in this class, however since we
         # use them a lot the challenge class this should be more efficient
         self.re_list.append(re.compile("^([0-9A-Z]\\d)\\)\\s+\\[(.*?)\\]\\s+__(.*?)__"))
-        self.re_list.append(re.compile("^https://anilist.co/anime/(\\d+)/*"))
+        self.re_list.append(re.compile("^https://anilist.co/" + variant + "/(\\d+)/*"))
         self.re_list.append(re.compile("^Start:\\s+(.*?)\\s+Finish:\\s+(.*?)\\s+(//.*)"))
         self.re_list.append(re.compile("^Start:\\s+(.*?)\\s+Finish:\\s+(.*)"))
         self.re_list.append(re.compile("^Challenge Start Date:\\s+(.*)")) 
@@ -116,7 +124,7 @@ class ChallengeList:
 
         # making challenge objects
         for i in self.chl_str_list:
-            self.chl_list.append(Challenge(i, self.re_list))
+            self.chl_list.append(Challenge(i, self.re_list, variant))
 
 
     def addDates(self, cache, idxl, debug=False):

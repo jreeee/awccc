@@ -21,7 +21,7 @@ class Cache:
     cache_l_fp = None
     cfg_fp = None
 
-    def __init__(self, cache_path, config_path, debug=False):
+    def __init__(self, cache_path, config_path, manga, debug=False):
 
         # completed, watching, notcompl, notchecked, failedcheck, rewatching
         self.syms = [ "X", "W", "O", "*", "!", "R" ]
@@ -45,7 +45,10 @@ class Cache:
 
         self.cache_a = {}
         self.cache_l = {}
-        self.cache_a_fp = os.path.join(cache_path, "anime.json")
+        if manga:
+            self.cache_a_fp = os.path.join(cache_path, "manga.json")
+        else:
+            self.cache_a_fp = os.path.join(cache_path, "anime.json")
         self.cache_l_fp= os.path.join(cache_path, f"list-{self.user.lower()}.json")
 
         if os.path.exists(self.cache_a_fp):

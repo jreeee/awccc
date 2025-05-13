@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-def checkCaching(cache, list, debug=False):
+def checkCaching(cache, list, is_manga, debug=False):
     
     if debug:
         print("round one: checking cached anime")
@@ -8,6 +8,10 @@ def checkCaching(cache, list, debug=False):
     newlist = createIdxList(cache, list, idl, debug)
     req = False
 
+    if is_manga:
+        variant = "MANGA"
+    else:
+        variant = "ANIME"
     for i in newlist:
         if i == -1:
             req = True
@@ -19,7 +23,7 @@ def checkCaching(cache, list, debug=False):
     else:
         if debug:
             print("round two: update cache to get missing shows")
-        cache.get_list(cache.user, "ANIME", "COMPLETED")
+        cache.get_list(cache.user, variant, "COMPLETED")
         return createIdxList(cache, list, newlist, debug)
     
 # force would be set to true if you want to update a cached anime which should happen rarely    
