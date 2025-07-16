@@ -11,17 +11,19 @@ class Challenge:
     req = 0
     id = 0
     sym = 'o'
+    name = ""
     date_s = "YYYY-MM-DD"
     date_f = "YYYY-MM-DD"
     add_str = ""
     chl_str = None
     var = "anime"
+    card = True
 
     def __init__ (self, challenge, regex, variant):
         # split the challenge string and store its values
         # atm it won't work if it isn't in the 3-line format
         # TODO for-loop and proper checking
-        
+
         l1 = regex[0].search(challenge[0])
         l2 = regex[1].search(challenge[1])
         l3 = regex[2].search(challenge[2])
@@ -30,10 +32,20 @@ class Challenge:
         self.sym = l1.group(2)
         self.chl_str = l1.group(3)
         self.var = variant
+
+        # card link
         if l2 != None:
             self.id = l2.group(1)
+
+        # MD link !!NOT CHECKING FOR CORRECT TITLE!!
         else:
-            self.id = "0"
+            l2 = regex[9].search(challenge[1])
+            if l2 != None:
+                self.card = False
+                self.name = l2.group(1)
+                self.id = l2.group(2)
+            else:
+                self.id = 0
 
         if l3:
             self.add_str = l3.group(3)
@@ -55,8 +67,11 @@ class Challenge:
     def toString(self):
         l = []
         l.append(self.req + ") [" + self.sym + "] __" + self.chl_str + "__\n")
-        l.append("https://anilist.co/" + self.var + "/" + self.id + "/\n")
-        l.append("Start: " + self.date_s + " Finish: " + self.date_f + " " + self.add_str + "\n")
+        if self.card:
+            l.append(f"https://anilist.co/{self.var}/{self.id}\n")
+        else:
+            l.append(f"[{self.name}](https://anilist.co/{self.var}/{self.id})\n")
+        l.append(f"Start: {self.date_s} Finish: {self.date_f} {self.add_str}\n")
         return l
 
 class ChallengeList:
@@ -93,10 +108,15 @@ class ChallengeList:
         self.re_list.append(re.compile("^Start:\\s+(.*?)\\s+Finish:\\s+(.*)"))
         self.re_list.append(re.compile("^Challenge Start Date:\\s+(.*)")) 
         self.re_list.append(re.compile("^Challenge Finish Date:\\s+(.*)"))
+
         # there's got to be a better / smarter way to do this...
         self.re_list.append(re.compile("^Legend:\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*)"))
         self.re_list.append(re.compile("^Legend:\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*)"))
         self.re_list.append(re.compile("^Legend:\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*?)\\s+\\[(.*?)\\]\\s+=\\s+(.*)"))
+
+        # oh no
+        self.re_list.append(re.compile("^\\[(.*?)\\]\\(https://anilist.co/" + variant + "/(\\d+)/*\\)"))
+
 
         # sorting entries into lists
         with open(file_path, "r+", encoding="utf-8") as f:
